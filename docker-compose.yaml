@@ -1,0 +1,27 @@
+version: '3.2'
+
+services:
+
+  proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    environment:
+      - VIRTUAL_HOST=nginx.local
+
+  falconbase:
+    image: falconbase
+
+  falcontest:
+    build: falcontest
+    depends_on: 
+      - falconbase
+    links:
+      - falconbase
+    volumes:
+      - $PWD/dockervol:/repository
+    environment:
+      - VIRTUAL_HOST=falcontest.local
+
